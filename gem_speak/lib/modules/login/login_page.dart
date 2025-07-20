@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gem_speak/common/constant/app_assets.dart';
 import 'package:gem_speak/common/constant/app_colors.dart';
 import 'package:gem_speak/common/constant/app_constants.dart';
+import 'package:gem_speak/common/widgets/common_button.dart';
+import 'package:gem_speak/common/widgets/loading_widget.dart';
 import 'package:gem_speak/core/auth/bloc/auth_bloc.dart';
 import 'package:gem_speak/utils/validators.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lottie/lottie.dart';
 
 class LoginPage extends StatefulWidget {
@@ -33,53 +34,44 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.maskGreen.withValues(alpha: 0.95),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          _buildMainBody(context),
-          BlocBuilder<AuthBloc, AuthState>(
-            builder: (BuildContext context, AuthState state) {
-              if (state is AuthLoading) {
-                return Positioned.fill(child: _buildOverlayLoading());
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOverlayLoading() {
-    return Container(
-      color: AppColors.maskGreen.withValues(alpha: .5),
-      child: Center(
-        child: ClipOval(
-          child: Container(
-            width: 160,
-            height: 160,
-            color: AppColors.polar,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Lottie.asset(
-                  AppAssets.owlBirdLoading,
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
-                SizedBox(height: 5),
-                LoadingAnimationWidget.staggeredDotsWave(
-                  color: AppColors.cardinal,
-                  size: 30,
-                ),
-              ],
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthUnauthenticated) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message ?? 'Login failed')),
+            );
+          }
+        },
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  _buildMainBody(context),
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (BuildContext context, AuthState state) {
+                      if (state is AuthLoading) {
+                        return Positioned.fill(child: _buildOverlayLoading());
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildOverlayLoading() {
+    return LoadingWidget();
   }
 
   Column _buildMainBody(BuildContext context) {
@@ -90,21 +82,19 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(height: 24),
         _buildForm(),
         SizedBox(height: 48),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.snow,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
+        CommonButton(
           onPressed: () {
-            context.read<AuthBloc>().add(LoggedIn());
+            FocusManager.instance.primaryFocus?.unfocus();
+            if (_formKey.currentState?.validate() ?? false) {
+              context.read<AuthBloc>().add(
+                LoggedIn(
+                  email: _emailController.text.trim(),
+                  password: _passwordController.text.trim(),
+                ),
+              );
+            }
           },
-          child: Text(
-            'Login',
-            style: TextStyle(fontSize: 16, color: AppColors.textColor),
-          ),
+          text: 'Login',
         ),
       ],
     );
