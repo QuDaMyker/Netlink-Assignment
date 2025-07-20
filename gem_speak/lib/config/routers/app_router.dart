@@ -44,13 +44,8 @@ class AppRouter {
       refreshListenable: authBlocNotifier,
       redirect: (context, state) {
         final isLoggedIn = authBloc.state is AuthAuthenticated;
-        // final isLoggingIn = state.uri.path == RoutePaths.login;
         final isSplash = state.uri.path == RoutePaths.splash;
         final isLogin = authBloc.state is AuthUnauthenticated;
-
-        // if (isSplash) {
-        //   return RoutePaths.splash;
-        // }
 
         if (isLogin) {
           return RoutePaths.login;

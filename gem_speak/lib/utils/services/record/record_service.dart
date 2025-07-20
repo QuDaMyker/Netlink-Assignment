@@ -41,7 +41,6 @@ class RecordService {
     }
   }
 
-  /// Ghi âm theo dạng stream (realtime)
   Future<void> startRecordingToStream() async {
     if (await _recorder.hasPermission()) {
       _stream = await _recorder.startStream(
@@ -53,7 +52,6 @@ class RecordService {
       _streamSub = _stream?.listen((buffer) {
         final amplitude = _calculateAmplitude(buffer);
         _volumeController.add(amplitude);
-        // socket.send(buffer); // tuỳ chọn gửi dữ liệu
       });
     }
   }
@@ -80,7 +78,6 @@ class RecordService {
 
   Future<bool> isRecording() => _recorder.isRecording();
 
-  /// Tính toán biên độ (0.0 - 1.0)
   double _calculateAmplitude(Uint8List buffer) {
     final intList = Int16List.view(buffer.buffer);
     int maxAmp = 0;

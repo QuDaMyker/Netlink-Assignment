@@ -76,7 +76,6 @@ class UserAnswerWidget extends StatelessWidget {
     );
   }
 
-  /// Xác định kết quả theo điểm đánh giá
   String get resultLabel {
     final score = userAnswer.assessments?.firstOrNull?.completenessScore;
     if (score != null) {
@@ -87,7 +86,6 @@ class UserAnswerWidget extends StatelessWidget {
     return 'Unknown';
   }
 
-  /// Màu sắc kết quả
   Color get resultColor {
     switch (resultLabel) {
       case 'Correct':

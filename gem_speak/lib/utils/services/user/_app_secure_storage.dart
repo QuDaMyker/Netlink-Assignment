@@ -13,7 +13,6 @@ class AppSecureStorage<E> implements AppStorage {
 
   Future<void> init() async {
     const secureStorage = FlutterSecureStorage();
-    // if key not exists return null
     final encryptionKeyString = await secureStorage.read(key: 'key');
     if (encryptionKeyString == null) {
       final key = Hive.generateSecureKey();

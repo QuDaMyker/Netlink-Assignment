@@ -210,6 +210,281 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+## 🐳 Docker Deployment
+
+### **Prerequisites**
+- Docker Engine (v20.0+ recommended)
+- Docker Compose (v2.0+ recommended)
+- Google Cloud credentials file placed in `./credentials/`
+
+### **Environment Setup**
+
+Create a `.env.production` file for production deployment:
+
+```env
+# Database Configuration
+DATABASE_URL="postgresql://postgres:gemspeak@db:5432/gem_speak"
+
+# Google Cloud Speech-to-Text
+GOOGLE_APPLICATION_CREDENTIALS="./credentials/gemspeak-ee3bcde1a852.json"
+
+# Microsoft Azure Speech Services
+AZURE_SPEECH_KEY="your_azure_speech_key"
+AZURE_SPEECH_REGION="your_azure_region"
+
+# Google Gemini AI
+GEMINI_API_KEY="your_gemini_api_key"
+
+# JWT Configuration
+JWT_SECRET="your_production_jwt_secret"
+
+# Application Configuration
+NODE_ENV="production"
+PORT=3000
+```
+
+### **Using Pre-built Images (Recommended)**
+
+The fastest way to run the application is using the pre-built Docker images:
+
+```bash
+# Start the application with pre-built images
+$ docker-compose -f docker-compose-server.yml up -d
+
+# View logs
+$ docker-compose -f docker-compose-server.yml logs -f
+
+# Stop the application
+$ docker-compose -f docker-compose-server.yml down
+```
+
+**Available Services:**
+- **Database**: `quocdanhmyker/gemspeak-db:1.0.1` (PostgreSQL 17 with pre-configured schema)
+- **API Server**: `quocdanhmyker/gemspeak-app:1.0.1` (NestJS application)
+
+### **Building from Source**
+
+To build and run the application from source code:
+
+```bash
+# Build and start all services
+$ docker-compose up --build -d
+
+# View real-time logs
+$ docker-compose logs -f app
+
+# Rebuild specific service
+$ docker-compose build app
+$ docker-compose up -d app
+
+# Stop all services
+$ docker-compose down
+```
+
+### **Container Details**
+
+#### **Database Container (`postgres_db`)**
+- **Image**: PostgreSQL 17
+- **Port**: 5433 (host) → 5432 (container)
+- **Credentials**:
+  - Username: `postgres`
+  - Password: `gemspeak`
+  - Database: `gem_speak`
+- **Initialization**: Runs `./db/init.sql` on first startup
+- **Data Persistence**: Database data is stored in Docker volumes
+
+#### **Application Container (`nest_app`)**
+- **Base Image**: Node.js 20 (slim)
+- **Port**: 4000 (host) → 3000 (container)
+- **Features**:
+  - Multi-stage build for optimized image size
+  - PostgreSQL client included for database operations
+  - Health check script (`wait-for-postgres.sh`)
+  - Auto-restart on container failure
+
+### **Docker Commands Reference**
+
+#### **Container Management**
+```bash
+# Start services in background
+$ docker-compose up -d
+
+# Start with custom compose file
+$ docker-compose -f docker-compose-server.yml up -d
+
+# View running containers
+$ docker-compose ps
+
+# Stop services
+$ docker-compose down
+
+# Stop and remove volumes (⚠️ destroys data)
+$ docker-compose down -v
+```
+
+#### **Logs & Debugging**
+```bash
+# View all logs
+$ docker-compose logs
+
+# Follow logs for specific service
+$ docker-compose logs -f app
+$ docker-compose logs -f db
+
+# Execute commands inside container
+$ docker-compose exec app bash
+$ docker-compose exec db psql -U postgres -d gem_speak
+```
+
+#### **Database Operations**
+```bash
+# Run Prisma migrations inside container
+$ docker-compose exec app yarn prisma migrate dev
+
+# Reset database
+$ docker-compose exec app yarn prisma migrate reset
+
+# Generate Prisma client
+$ docker-compose exec app yarn prisma generate
+
+# Seed database
+$ docker-compose exec app yarn prisma db seed
+```
+
+#### **Development with Docker**
+```bash
+# Mount source code for development
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+# Rebuild and restart after code changes
+$ docker-compose build app && docker-compose up -d app
+```
+
+### **Production Deployment**
+
+#### **Build Production Images**
+```bash
+# Build application image
+$ docker build -t gemspeak-app:latest .
+
+# Build database image
+$ docker build -f Dockerfile.db -t gemspeak-db:latest .
+
+# Tag for registry
+$ docker tag gemspeak-app:latest your-registry/gemspeak-app:v1.0.0
+$ docker tag gemspeak-db:latest your-registry/gemspeak-db:v1.0.0
+```
+
+#### **Push to Registry**
+```bash
+# Push to Docker Hub or private registry
+$ docker push your-registry/gemspeak-app:v1.0.0
+$ docker push your-registry/gemspeak-db:v1.0.0
+```
+
+#### **Deploy to Production Server**
+```bash
+# On production server
+$ docker-compose -f docker-compose-server.yml pull
+$ docker-compose -f docker-compose-server.yml up -d
+```
+
+### **Health Checks & Monitoring**
+
+#### **Application Health**
+```bash
+# Check if application is running
+$ curl http://localhost:4000/health
+
+# Database connection test
+$ docker-compose exec app yarn prisma db push --preview-feature
+```
+
+#### **Container Resource Usage**
+```bash
+# Monitor resource usage
+$ docker stats
+
+# Check container health
+$ docker-compose exec app ps aux
+$ docker-compose exec db pg_isready -U postgres
+```
+
+### **Troubleshooting Docker Issues**
+
+#### **Common Problems**
+
+**1. Port Conflicts**
+```bash
+# Check if ports are in use
+$ lsof -i :4000
+$ lsof -i :5433
+
+# Change ports in docker-compose.yml if needed
+```
+
+**2. Database Connection Issues**
+```bash
+# Check database container logs
+$ docker-compose logs db
+
+# Verify database is accepting connections
+$ docker-compose exec db pg_isready -U postgres -h localhost
+```
+
+**3. Permission Issues**
+```bash
+# Fix credential file permissions
+$ chmod 600 ./credentials/gemspeak-ee3bcde1a852.json
+
+# Check volume mounts
+$ docker-compose exec app ls -la /app/credentials/
+```
+
+**4. Memory Issues**
+```bash
+# Increase Docker memory limit (Docker Desktop)
+# Settings → Resources → Memory: 4GB+
+
+# Monitor memory usage
+$ docker stats --no-stream
+```
+
+#### **Reset Everything**
+```bash
+# Stop all containers and remove volumes
+$ docker-compose down -v
+
+# Remove all images (nuclear option)
+$ docker system prune -a
+
+# Rebuild from scratch
+$ docker-compose build --no-cache
+$ docker-compose up -d
+```
+
+### **Docker Development Workflow**
+
+1. **Local Development**: Use `docker-compose.yml` for local testing
+2. **Staging**: Use `docker-compose-server.yml` with staging images
+3. **Production**: Deploy using container orchestration (Kubernetes, Docker Swarm)
+
+### **Performance Optimization**
+
+#### **Image Size Optimization**
+- Multi-stage builds reduce final image size by ~60%
+- Only production dependencies in final image
+- Slim base images for reduced attack surface
+
+#### **Build Cache Optimization**
+```dockerfile
+# Copy package files first for better caching
+COPY package.json yarn.lock* ./
+RUN yarn install --frozen-lockfile
+# Copy source code last
+COPY . .
+```
+
 ## 📡 API Endpoints
 
 ### **Authentication**
@@ -316,8 +591,7 @@ This project is licensed under the [UNLICENSED](LICENSE) license.
 - **Microsoft Azure**: Cognitive Services for speech assessment
 - **Google AI**: Gemini AI for intelligent feedback
 - **Prisma Team**: For the modern ORM solution
-
----
+```
 
 <p align="center">
   Built with ❤️ using NestJS, TypeScript, and AI technologies

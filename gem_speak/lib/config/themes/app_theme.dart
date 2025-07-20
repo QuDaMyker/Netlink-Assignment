@@ -49,10 +49,4 @@ ThemeData appTheme = ThemeData(
     showSelectedLabels: true,
     showUnselectedLabels: true,
   ),
-  // pageTransitionsTheme: const PageTransitionsTheme(
-  //   builders: {
-  //     TargetPlatform.iOS: FadeOpenPageTransitionsBuilder(),
-  //     TargetPlatform.android: FadeOpenPageTransitionsBuilder(),
-  //   },
-  // ),
 );
