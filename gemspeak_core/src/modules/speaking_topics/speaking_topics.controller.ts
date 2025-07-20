@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Controller, Get, Param } from '@nestjs/common';
 import { SpeakingTopicsService } from './speaking_topics.service';
 

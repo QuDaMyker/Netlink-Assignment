@@ -13,7 +13,9 @@ void main() async {
   await setUpRootDependencies();
   final apiClient = getIt<ApiClient>();
   // Server testing EC2 instance
-  apiClient.updateBaseUrl('http://3.107.2.186:4040');
+  // apiClient.updateBaseUrl('http://3.107.2.186:4040');
+  apiClient.updateBaseUrl('http://192.168.0.152:3000');
+
   await apiClient.get('/hello-world'); // Test the API connection
   if (kDebugMode) {
     Bloc.observer = AppBlocObserver(getIt());

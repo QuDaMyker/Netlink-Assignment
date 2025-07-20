@@ -50,6 +50,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       if (response.isSuccess) {
         await appStorage.saveUserAuth(jsonEncode(response.data!.toJson()));
+        final apiClient = getIt<ApiClient>();
+        apiClient.updateAccessToken(response.data!.accessToken);
         emit(AuthAuthenticated(userAuth: response.data!));
       } else {
         emit(AuthUnauthenticated(message: 'Invalid email or password'));

@@ -5,3 +5,4 @@ gem_speak/.dart_tool/package_config_subset
 gem_speak/.dart_tool/package_config.json
 gem_speak/.dart_tool/dartpad/web_plugin_registrant.dart
 gem_speak/.env
+gemspeak_core/.env.production

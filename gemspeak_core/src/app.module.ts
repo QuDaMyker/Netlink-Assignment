@@ -1,5 +1,4 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { GeminiService } from './modules/gemini/gemini.service';
@@ -22,6 +21,7 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    AuthModule,
     FeedbackModule,
     MulterModule.register({
       dest: './uploads',
@@ -41,9 +41,7 @@ import { ConfigModule } from '@nestjs/config';
     AudioPhonemesModule,
     UsersModule,
     UserStatsModule,
-    AuthModule,
   ],
-  controllers: [AppController],
   providers: [AppService, GeminiService],
 })
 export class AppModule implements NestModule {
