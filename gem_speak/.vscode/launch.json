@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "gem_speak",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "gem_speak (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "gem_speak (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "tool_core",
+            "cwd": "packages/tool_core",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "tool_core (profile mode)",
+            "cwd": "packages/tool_core",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "tool_core (release mode)",
+            "cwd": "packages/tool_core",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

@@ -41,6 +41,10 @@ class ApiClient {
     _dio.options.baseUrl = baseUrl;
   }
 
+  updateAccessToken(String accessToken) {
+    _dio.options.headers['Authorization'] = 'Bearer $accessToken';
+  }
+
   updateHeaders(Map<String, dynamic> headers) {
     _dio.options.headers.addAll(headers);
   }

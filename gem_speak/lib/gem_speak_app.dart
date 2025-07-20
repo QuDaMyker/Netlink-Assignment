@@ -5,6 +5,7 @@ import 'package:gem_speak/config/routers/app_router.dart';
 import 'package:gem_speak/config/themes/app_theme.dart';
 import 'package:gem_speak/core/auth/bloc/auth_bloc.dart';
 import 'package:gem_speak/locator.dart';
+import 'package:go_router/go_router.dart';
 
 class GemSpeakApp extends StatefulWidget {
   const GemSpeakApp({super.key});
@@ -14,11 +15,21 @@ class GemSpeakApp extends StatefulWidget {
 }
 
 class _GemSpeakAppState extends State<GemSpeakApp> {
-  final router = AppRouter.createRouter(getIt<AuthBloc>());
+  late final authBloc = getIt<AuthBloc>();
+  late final BlocNotifier<AuthBloc, AuthState> authBlocNotifier;
+  late final GoRouter router;
 
   @override
   void initState() {
     super.initState();
+    authBlocNotifier = BlocNotifier<AuthBloc, AuthState>(authBloc);
+    router = AppRouter.createRouter(authBloc, authBlocNotifier);
+  }
+
+  @override
+  void dispose() {
+    authBlocNotifier.dispose();
+    super.dispose();
   }
 
   @override

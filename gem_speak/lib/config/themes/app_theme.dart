@@ -29,7 +29,7 @@ ThemeData appTheme = ThemeData(
     primary: tbFeatherGreen,
     secondary: AppColors.macaw,
   ),
-  scaffoldBackgroundColor: const Color(0xFFFAFAFA),
+  scaffoldBackgroundColor: AppColors.snow,
   textTheme: theme.textTheme.apply(
     fontFamily: AppConstants.appFontFamily,
     bodyColor: AppColors.textColor,
@@ -38,12 +38,12 @@ ThemeData appTheme = ThemeData(
   primaryTextTheme: tbTypography.black,
   typography: tbTypography,
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.snow,
     foregroundColor: _tbTextColor,
     iconTheme: IconThemeData(color: _tbTextColor),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: Colors.white,
+    backgroundColor: AppColors.snow,
     selectedItemColor: tbFeatherGreen,
     unselectedItemColor: Colors.black.withValues(alpha: .38),
     showSelectedLabels: true,

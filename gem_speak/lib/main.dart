@@ -5,11 +5,15 @@ import 'package:gem_speak/app_bloc_observer.dart';
 import 'package:gem_speak/gem_speak_app.dart';
 import 'package:gem_speak/locator.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:tool_core/network/api_client.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await setUpRootDependencies();
+  final apiClient = getIt<ApiClient>();
+  apiClient.updateBaseUrl('http://192.168.0.152:3000');
+  await apiClient.get('/hello-world'); // Test the API connection
   if (kDebugMode) {
     Bloc.observer = AppBlocObserver(getIt());
   }
