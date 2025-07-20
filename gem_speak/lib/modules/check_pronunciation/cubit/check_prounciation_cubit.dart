@@ -99,9 +99,6 @@ class CheckProunciationCubit extends Cubit<CheckProunciationState> {
             isSendingAudio: false,
           ),
         );
-        // await sendGetPronunciationAssessment(
-        //   transcript: geminiFeedback.transcript,
-        // );
       } else {
         emit(
           state.copyWith(

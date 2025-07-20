@@ -70,7 +70,6 @@ class _NeumorphicProgressBarWidgetState
               );
             },
           ),
-          // ProgressRing(progress: widget.progress),
         ],
       ),
     );

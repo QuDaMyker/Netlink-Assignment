@@ -158,7 +158,6 @@ class ProfilePage extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    // 'Joined: January 1, 2023',
                     'Joined: ${(context.read<AuthBloc>().state as AuthAuthenticated).userAuth.createdAt?.eeeddmmyyyy()}',
                     style: TextStyle(
                       fontSize: 18,

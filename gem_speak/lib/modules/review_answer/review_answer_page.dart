@@ -203,10 +203,6 @@ class ReviewAnswerPage extends StatelessWidget {
             color: Colors.blueGrey.shade50,
             borderRadius: BorderRadius.circular(8),
           ),
-          // child: Text(
-          //   feedback,
-          //   style: const TextStyle(fontSize: 14, height: 1.5),
-          // ),
           child: _buildHtml(context, feedback),
         ),
       ],

@@ -12,7 +12,8 @@ void main() async {
   await Hive.initFlutter();
   await setUpRootDependencies();
   final apiClient = getIt<ApiClient>();
-  apiClient.updateBaseUrl('http://192.168.0.152:3000');
+  // Server testing EC2 instance
+  apiClient.updateBaseUrl('http://3.107.2.186:4040');
   await apiClient.get('/hello-world'); // Test the API connection
   if (kDebugMode) {
     Bloc.observer = AppBlocObserver(getIt());
