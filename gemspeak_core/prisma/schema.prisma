@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model questions {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  question_text    String
+  language_code    String?          @default("en-US") @db.VarChar(10)
+  difficulty_level String?          @db.VarChar(20)
+  topic            String?          @db.Uuid
+  created_at       DateTime?        @default(now()) @db.Timestamp(6)
+  speaking_topics  speaking_topics? @relation(fields: [topic], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_answers     user_answers[]
+}
+
+model speaking_topics {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  description String?
+  created_at  DateTime?   @default(now()) @db.Timestamp(6)
+  questions   questions[]
+}
+
+model users {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String         @unique @db.VarChar(255)
+  password_hash String
+  create_at     DateTime?      @default(now()) @db.Timestamp(6)
+  last_login    DateTime?      @db.Timestamp(6)
+  user_answers  user_answers[]
+}
+
+model audio_assessments {
+  id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_answer_id      String?       @db.Uuid
+  original_text       String
+  pronunciation_score Int?
+  accuracy_score      Int?
+  fluency_score       Int?
+  completeness_score  Int?
+  created_at          DateTime?     @default(now()) @db.Timestamp(6)
+  gemini_feedback     String?
+  user_answers        user_answers? @relation(fields: [user_answer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  audio_words         audio_words[]
+}
+
+model audio_phonemes {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  word_id        String?      @db.Uuid
+  phoneme        String
+  accuracy_score Int?
+  error_type     String?
+  audio_words    audio_words? @relation(fields: [word_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model audio_syllables {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  word_id        String?      @db.Uuid
+  syllable       String
+  accuracy_score Int?
+  audio_words    audio_words? @relation(fields: [word_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model audio_words {
+  id                String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  assessment_id     String?            @db.Uuid
+  word              String
+  accuracy_score    Int?
+  error_type        String?
+  audio_phonemes    audio_phonemes[]
+  audio_syllables   audio_syllables[]
+  audio_assessments audio_assessments? @relation(fields: [assessment_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user_answers {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String?             @db.Uuid
+  question_id       String?             @db.Uuid
+  audio_file_path   String?
+  transcription     String?
+  created_at        DateTime?           @default(now()) @db.Timestamp(6)
+  audio_assessments audio_assessments[]
+  questions         questions?          @relation(fields: [question_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users             users?              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
