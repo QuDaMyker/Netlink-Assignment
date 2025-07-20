@@ -32,4 +32,15 @@ abstract class AppColors {
   static const Color greenShader = Color(0xff2d6700);
 
   static Color textColor = AppColors.greenShader.withValues(alpha: 0.9);
+
+  static const List<Color> topicColors = [
+    featherGreen,
+    maskGreen,
+    macaw,
+    cardinal,
+    // bee,
+    fox,
+    beetle,
+    humpback,
+  ];
 }

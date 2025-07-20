@@ -9,6 +9,14 @@ sealed class AuthEvent extends Equatable {
 
 class AppStarted extends AuthEvent {}
 
-class LoggedIn extends AuthEvent {}
+class LoggedIn extends AuthEvent {
+  final String email;
+  final String password;
+
+  const LoggedIn({required this.email, required this.password});
+
+  @override
+  List<Object> get props => [email, password];
+}
 
 class LoggedOut extends AuthEvent {}

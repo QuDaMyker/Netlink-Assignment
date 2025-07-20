@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gem_speak/common/constant/app_colors.dart';
 import 'package:gem_speak/common/constant/app_constants.dart';
 import 'package:gem_speak/core/auth/bloc/auth_bloc.dart';
-import 'package:gem_speak/locator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SplashPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getIt<AuthBloc>().add(AppStarted());
+      context.read<AuthBloc>().add(AppStarted());
     });
   }
 
