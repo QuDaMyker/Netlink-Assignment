@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  db:
+    image: quocdanhmyker/gemspeak-db:1.0.1
+    container_name: postgres_db
+    ports:
+      - "5433:5432"
+    restart: always
+
+  app:
+    image: quocdanhmyker/gemspeak-app:1.0.1
+    container_name: nest_app
+    depends_on:
+      - db
+    env_file:
+      - .env.production
+    ports:
+      - "4000:3000"
+    volumes:
+      - ./credentials:/app/credentials:ro
+    platform: linux/amd64
