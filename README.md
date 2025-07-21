@@ -44,10 +44,6 @@ GemSpeak leverages advanced AI technologies including Azure Speech Services, Goo
   <img src="preview/Screenshot_1753026284.png" width="200" alt="Learning History" />
 </p>
 
-<p align="center">
-  <img src="preview/Screenshot_1753026289.png" width="200" alt="Audio Playback" />
-</p>
-
 *Experience the intuitive interface designed for effective pronunciation learning across all devices*
 
 ## 🏗️ Architecture
@@ -58,16 +54,16 @@ This project follows a **microservices architecture** with clear separation betw
 ┌─────────────────────────────────────────────────────────────┐
 │                    GemSpeak Platform                        │
 ├─────────────────────────────────────────────────────────────┤
-│  Frontend (gem_speak/)          │  Backend (gemspeak_core/)  │
+│  Frontend (gem_speak/)          │  Backend (gemspeak_core/) │
 │  ├─ Flutter Mobile App          │  ├─ NestJS API Server     │
 │  ├─ Cross-platform UI           │  ├─ PostgreSQL Database   │
-│  ├─ BLoC State Management       │  ├─ Prisma ORM           │
+│  ├─ BLoC State Management       │  ├─ Prisma ORM            │
 │  └─ Audio Recording/Playback    │  └─ JWT Authentication    │
 ├─────────────────────────────────────────────────────────────┤
-│                    AI Services Integration                   │
+│                    AI Services Integration                  │
 │  ├─ Azure Speech Services (Pronunciation Assessment)        │
-│  ├─ Google Cloud Speech-to-Text (Transcription)            │
-│  └─ Google Gemini AI (Intelligent Feedback)                │
+│  ├─ Google Cloud Speech-to-Text (Transcription)             │
+│  └─ Google Gemini AI (Intelligent Feedback)                 │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -232,12 +228,12 @@ For testing and demonstration purposes, you can use the following test account:
 GemSpeak provides pre-built Docker images for easy deployment across any environment:
 
 #### **Pre-built Docker Images**
-- **Database**: `quocdanhmyker/gemspeak-db:1.0.1`
+- **Database**: `quocdanhmyker/gemspeak-db:1.0.2` (check latest on DockerHub)
   - PostgreSQL 17 with pre-configured schema
   - Includes initial database structure and seed data
   - Optimized for production workloads
 
-- **Backend API**: `quocdanhmyker/gemspeak-app:1.0.1`
+- **Backend API**: `quocdanhmyker/gemspeak-app:1.0.2` (check latest on DockerHub)
   - NestJS application with all dependencies
   - Multi-stage build for optimized size (~200MB)
   - Includes Prisma client and database tools
@@ -271,13 +267,12 @@ GemSpeak provides pre-built Docker images for easy deployment across any environ
 4. **Access the application**
    - **API Server**: `http://localhost:4000`
    - **Database**: `localhost:5433`
-   - **API Documentation**: `http://localhost:4000/api/docs`
+   - **API Documentation**: `http://localhost:4000/builtlab/api/document`
 
 #### **Docker Compose Configuration**
 
 ```yaml
 # docker-compose-server.yml
-version: '3.9'
 
 services:
   db:
@@ -395,7 +390,7 @@ The GemSpeak platform has been successfully tested and deployed on **Amazon EC2*
 
 Once deployed on EC2, your application will be accessible at:
 - **API Server**: `http://your-ec2-public-ip:4000`
-- **API Documentation**: `http://your-ec2-public-ip:4000/api/docs`
+- **API Documentation**: `http://your-ec2-public-ip:4000/builtlab/api/document`
 - **Health Check**: `http://your-ec2-public-ip:4000/health`
 
 #### **SSL Configuration (Optional)**
